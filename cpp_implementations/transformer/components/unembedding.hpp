@@ -4,10 +4,10 @@
 #define UNEMBEDDING_H
 
 struct UnembeddingImpl : public torch::nn::Module {
-    UnembeddingImpl(int64_t d_model, int64_t vocab_size);
-    torch::Tensor forward(torch::Tensor x);
+  UnembeddingImpl(int64_t d_model, int64_t vocab_size);
+  torch::Tensor forward(torch::Tensor x);
 
-    torch::nn::Linear fc;
+  torch::nn::Linear fc;
 };
 
 TORCH_MODULE(Unembedding);
