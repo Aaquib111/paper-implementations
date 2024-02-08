@@ -1,0 +1,3 @@
+/Users/aaquibsyed/Documents/Python/implementations/cpp_implementations/transformer/builds/CMakeFiles/transformer.dir
+/Users/aaquibsyed/Documents/Python/implementations/cpp_implementations/transformer/builds/CMakeFiles/edit_cache.dir
+/Users/aaquibsyed/Documents/Python/implementations/cpp_implementations/transformer/builds/CMakeFiles/rebuild_cache.dir

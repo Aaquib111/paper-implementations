@@ -10,7 +10,7 @@ TransformerImpl::TransformerImpl(int64_t vocab_size, int64_t d_model,
   // Initialize transformer blocks
   for (int i = 0; i < num_blocks; ++i) {
     auto block = TransformerBlock(d_model, d_mlp, n_heads, d_head, rotary_dim,
-                                  rotary_base, n_ctx);
+                                  rotary_base, n_ctx, true);
     blocks.push_back(block);
     register_module("block" + std::to_string(i), block);
   }

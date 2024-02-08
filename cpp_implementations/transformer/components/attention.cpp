@@ -3,13 +3,14 @@
 // Attention with rotary positional encoding and KV caching
 AttentionImpl::AttentionImpl(int64_t d_model, int64_t n_heads, int64_t d_head,
                              int64_t rotary_dim, int64_t rotary_base,
-                             int64_t n_ctx)
+                             int64_t n_ctx, bool use_cache)
     : d_model(d_model),
       n_heads(n_heads),
       d_head(d_head),
       rotary_dim(rotary_dim),
       n_ctx(n_ctx),
       rotary_base(rotary_base),
+      use_cache(use_cache),
       IGNORE(torch::tensor(-std::numeric_limits<float>::infinity())
                  .to(torch::kFloat32)) {
   // Register weight tensors
@@ -46,6 +47,10 @@ AttentionImpl::AttentionImpl(int64_t d_model, int64_t n_heads, int64_t d_head,
 
   register_buffer("rotary_sin", sin);
   register_buffer("rotary_cos", cos);
+
+  // Cache
+  key_cache = torch::Tensor();
+  value_cache = torch::Tensor();
 }
 
 std::pair<torch::Tensor, torch::Tensor> AttentionImpl::calculate_sin_cos_rotary(
@@ -97,13 +102,24 @@ torch::Tensor AttentionImpl::apply_causal_mask(torch::Tensor x) {
 }
 
 torch::Tensor AttentionImpl::forward(torch::Tensor x) {
+  torch::Tensor k;
+
   // Query vector, shape (batch, seq_pos, n_heads, d_head)
   torch::Tensor q =
-      torch::matmul(x.unsqueeze(1), weight_q).permute({0, 2, 1, 3}) + bias_q;
+        torch::matmul(x.unsqueeze(1), weight_q).permute({0, 2, 1, 3}) + bias_q;
 
+  // Key caching
   // Key vector, shape (batch, seq_pos, n_heads, d_head)
-  torch::Tensor k =
-      torch::matmul(x.unsqueeze(1), weight_k).permute({0, 2, 1, 3}) + bias_k;
+  if(use_cache && key_cache.defined()) {
+    k =
+        torch::matmul(x.select(1, -1).unsqueeze(1).unsqueeze(1), weight_k).permute({0, 2, 1, 3}) + bias_k;
+
+    k = torch::cat({key_cache, k}, 1);
+    key_cache = k;
+  } else {
+    k =
+        torch::matmul(x.unsqueeze(1), weight_k).permute({0, 2, 1, 3}) + bias_k;
+  }
 
   // Apply RoPE to q and k
   q = apply_rotary(q);
@@ -122,9 +138,19 @@ torch::Tensor AttentionImpl::forward(torch::Tensor x) {
   attn_pattern = torch::where(attn_pattern.isnan(),
                               torch::zeros_like(attn_pattern), attn_pattern);
 
+  // Value caching
   // Value vector, shape (batch, seq_pos, n_heads, d_head)
-  torch::Tensor v =
-      torch::matmul(x.unsqueeze(1), weight_v).permute({0, 2, 1, 3}) + bias_v;
+  torch::Tensor v;
+  if(use_cache && value_cache.defined()) {
+    v =
+        torch::matmul(x.select(1, -1).unsqueeze(1).unsqueeze(1), weight_v).permute({0, 2, 1, 3}) + bias_v;
+
+    v = torch::cat({value_cache, v}, 1);
+    value_cache = v;
+  } else {
+    v =
+        torch::matmul(x.unsqueeze(1), weight_v).permute({0, 2, 1, 3}) + bias_v;
+  }
 
   // Attention output before applying weight_o, shape (batch, query_pos,
   // n_heads, d_head)
@@ -136,4 +162,9 @@ torch::Tensor AttentionImpl::forward(torch::Tensor x) {
                            (bias_o / n_heads);
 
   return attn_out;
+}
+
+void AttentionImpl::clear_cache() {
+  key_cache = torch::Tensor();
+  value_cache = torch::Tensor();
 }

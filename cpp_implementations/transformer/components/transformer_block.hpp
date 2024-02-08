@@ -10,7 +10,7 @@
 struct TransformerBlockImpl : public torch::nn::Module {
   TransformerBlockImpl(int64_t d_model, int64_t d_mlp, int64_t n_heads,
                        int64_t d_head, int64_t rotary_dim, int64_t rotary_base,
-                       int64_t n_ctx);
+                       int64_t n_ctx, bool use_cache);
   torch::Tensor forward(torch::Tensor x);
 
   Attention self_attn;
