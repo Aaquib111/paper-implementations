@@ -10,8 +10,10 @@
 ## Build instructions
 
 - Install [libtorch](https://pytorch.org/cppdocs/installing.html)
-- To build: Edit `transformer/builds/build.sh` and point `-DCMAKE_PREFIX_PATH` to the absolute file path to libtorch
-- To run: `transformer/builds/transformer` is the executable
+- To build:
+  - Edit `transformer/builds/build.sh` and point `-DCMAKE_PREFIX_PATH` to the absolute file path to libtorch
+  - Run `transformer/builds/build.sh`
+- To run executable: Run `transformer/builds/transformer`
 
 ## Future TODOs
 
