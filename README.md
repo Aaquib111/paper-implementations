@@ -10,6 +10,6 @@ Current implementations:
 |-------------|------|--------|-----|
 |Transformer|[link](https://github.com/Aaquib111/paper-implementations/tree/main/cpp_implementations/transformer)|||
 |Linear Regression|||[link](https://github.com/Aaquib111/paper-implementations/tree/main/JAX_implementations/linear_regression)|
-|CNN||[link](https://github.com/Aaquib111/paper-implementations/tree/main/py_implementations/cnn_from_scratch)||
+|CNN||[link](https://github.com/Aaquib111/paper-implementations/tree/main/py_implementations/cnn_resnet)||
 |             |      |        |     |
 |             |      |        |     |
