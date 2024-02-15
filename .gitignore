@@ -163,3 +163,4 @@ jax/
 libtorch/
 
 **/builds/*
+**/data/*
