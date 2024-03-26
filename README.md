@@ -8,8 +8,8 @@ Current implementations:
 
 | Name        | C++  | Python | JAX |
 |-------------|------|--------|-----|
-|Transformer|[link](https://github.com/Aaquib111/paper-implementations/tree/main/cpp_implementations/transformer)|||
+|[Transformer](https://arxiv.org/pdf/1706.03762.pdf)|[link](https://github.com/Aaquib111/paper-implementations/tree/main/cpp_implementations/transformer)|||
 |Linear Regression|||[link](https://github.com/Aaquib111/paper-implementations/tree/main/JAX_implementations/linear_regression)|
 |CNN||[link](https://github.com/Aaquib111/paper-implementations/tree/main/py_implementations/cnn_resnet)||
-|             |      |        |     |
+|[Projected Gradient Descent](https://arxiv.org/pdf/2402.09154.pdf)|      |[link](https://github.com/Aaquib111/paper-implementations/tree/main/py_implementations/PGD)|     |
 |             |      |        |     |
